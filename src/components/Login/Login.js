@@ -1,11 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import { useHistory, useLocation } from 'react-router';
 
 import './login.css';
 
 const Login = props => {
   const { user, googleSignIn, googleLogOut } = useAuth();
+  const location = useLocation();
+  const history = useHistory();
+  const redirectUrl = location.state?.form || './shop';
+
+  const handleGoogleLogin = () => {
+    googleSignIn().then(result => {
+      history.push(redirectUrl);
+    });
+  };
 
   return (
     <div className="login-form">
@@ -22,9 +32,9 @@ const Login = props => {
           <br />
           <input type="submit" value="Submit" />
         </form>
-        <button onClick={googleSignIn}>Google Sign In</button>
+        <button onClick={handleGoogleLogin}>Google Sign In</button>
 
-        {user ? <button onClick={googleLogOut}>Log Out</button> : ''}
+        {user.email ? <button onClick={googleLogOut}>Log Out</button> : ''}
 
         <h1>{user.displayName}</h1>
         <p>
